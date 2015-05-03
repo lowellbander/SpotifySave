@@ -17,13 +17,16 @@ ajax({url: lastfmURL, type: 'json'},
  function(json) {
    console.log('here\'s the response!');
    
-   var lastfmTrack = json['recenttracks']['track'][0]['name'];
-   console.log(lastfmTrack);
+   var lastfmTrack = json['recenttracks']['track'][0];
+   var trackName = lastfmTrack['name'];
+   var trackArtist = lastfmTrack['artist']['#text'];
+   var trackAlbum = lastfmTrack['album']['#text'];
+   //console.log(lastfmTrack);
 
   // Use data to show a weather forecast Card
   var resultsCard = new UI.Card({
-    title: lastfmTrack,
-    body: 'The current track'
+    title: trackName,
+    body: trackArtist + ', ' + trackAlbum
   });
 
   // Show results, remove splash card
