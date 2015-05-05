@@ -22,27 +22,32 @@ var mainCard = new UI.Card({
     body: ""
 });
 
+var getSpotifyTrackID = function (track) {
+    var url = 'https://api.spotify.com/v1/search?type=track&q=';
+    url += encodeURIComponent(track.name + ' ' + track.artist + ' ' + track.album);
+    log(url);
+    ajax({url: url, type: 'json'}, function (response) {
+        log(JSON.stringify(response));
+        log(response.tracks.items[0].id);
+    });
+};
+
 var update = function () {
     log('starting update');
     mainCard.update('loading ...', '');
     
-    var lastfmURL = 'http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=lowellbander&api_key=410af592466bfb635d96c11f77053117&format=json';
+    var url = 'http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=lowellbander&api_key=410af592466bfb635d96c11f77053117&format=json';
 
     // Download data
-    var data = {url: lastfmURL, type: 'json'};
+    var data = {url: url, type: 'json'};
     ajax(data, function(json) {
         log('update successful');
         var track = currentTrackInfoFromJson(json);
         mainCard.update(track.name, track.artist + ', ' + track.album);
+        getSpotifyTrackID(track);
     }, function(error) {
         log('Ajax failed: ' + error);
     });
-};
-
-var getSpotifyTrackID = function () {
-    var spotifySearchURL = 'https://api.spotify.com/v1/search?type=track&q='
-
-    
 };
 
 update();
