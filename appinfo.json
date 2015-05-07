@@ -1,7 +1,7 @@
 {
     "appKeys": {},
     "capabilities": [
-        ""
+        "configurable"
     ],
     "companyName": "lowellbander@gmail.com",
     "longName": "SpotifySave",
