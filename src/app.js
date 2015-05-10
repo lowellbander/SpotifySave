@@ -10,7 +10,7 @@ UI.Card.prototype.update = function(title, body) {
 var log = function (message) { console.log(message); };
 
 var authURL = 'http://ssauth.herokuapp.com';
-var access_token;
+//var access_token;
 var user_id;
 var current_track_id;
 
@@ -49,21 +49,19 @@ var getSpotifyTrackID = function (track) {
     });
 };
 
-var getSpotifyUserID = function (token/*, callback*/) {
+var getSpotifyUserID = function (token) {
     ajax({
         url: 'https://api.spotify.com/v1/me',
         headers: { Authorization: 'Bearer ' + token}
          }, function (response) {
-             //log('id response: ' + response);
              user_id = JSON.parse(response).id;
              log('got user_id: ' + user_id);
-             //callback();
          });
 };
 
 var update = function () {
     
-    if (typeof access_token == 'undefined') {
+    if (typeof localStorage.getItem('auth_token') == 'undefined') {
         mainCard.update('Please login', 'Open \'Settings\' for this app in Pebble.');
         return;
     } 
@@ -83,7 +81,7 @@ var update = function () {
         
         //var trackID = getSpotifyTrackID(track);
         getSpotifyTrackID(track);
-        getSpotifyUserID(access_token);
+        getSpotifyUserID(localStorage.getItem('auth_token'));
         
     }, function(error) {
         log('Ajax failed: ' + error);
@@ -93,7 +91,8 @@ var update = function () {
 // Set a configurable with just the close callback
 Settings.config( { url: authURL },
     function(e) {
-        access_token = e.options.access_token;
+        localStorage.setItem('auth_token', e.options.access_token);
+        //access_token = e.options.access_token;
         update();
         // Show the raw response if parsing failed
         if (e.failed) {
@@ -112,7 +111,7 @@ var saveCurrentTrack = function () {
         log(url);
         ajax({
             url: url,
-            headers: { Authorization: 'Bearer ' + access_token},
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('auth_token')},
             method: 'post'
             }, function (response) {
                 log(response);
