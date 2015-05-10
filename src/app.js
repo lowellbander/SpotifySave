@@ -93,9 +93,7 @@ var update = function () {
 // Set a configurable with just the close callback
 Settings.config( { url: authURL },
     function(e) {
-        
         access_token = e.options.access_token;
-        //log('access_token: ' + access_token);
         update();
         // Show the raw response if parsing failed
         if (e.failed) {
@@ -125,7 +123,9 @@ var saveCurrentTrack = function () {
                     statusCard.title('Failed to save the current track.');
                 }
                 statusCard.show();
-                // wait then hide
+                setTimeout(function () {
+                    statusCard.hide();
+                }, 1000);
             }, function (response) {
                 log('failed to save');
                 log(response);
